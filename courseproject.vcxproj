@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{0a944bb3-8933-4e2a-a1c7-159e72863f06}</ProjectGuid>
-    <RootNamespace>Assignment8</RootNamespace>
+    <RootNamespace>courseproject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -78,9 +78,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,14 +116,16 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include\CppUnitLite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\glad;$(SolutionDir)include\SDL\include;$(SolutionDir)include\freeglut\include\GL;$(SolutionDir)include\GLFW;$(SolutionDir)include\glm;include\CppUnitLite;$(SolutionDir)include\glew\native\include\GL;$(SolutionDir)include\glew-2.1.0\include\GL;;$(SolutionDir)include\GLFW;;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\SDL\lib\x64;$(SolutionDir)include\GLFW;%(AdditionalLibraryDirectories);$(SolutionDir)include\glew-2.1.0\lib\Release\x64;$(SolutionDir)include\freeglut\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)User32.lib;opengl32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,45 +134,38 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\glad;$(SolutionDir)include\SDL\include;$(SolutionDir)include\freeglut\include\GL;$(SolutionDir)include\GLFW;$(SolutionDir)include\glm;;$(SolutionDir)include\glew\native\include\GL;$(SolutionDir)include\glew-2.1.0\include\GL;;$(SolutionDir)include\GLFW;;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\SDL\lib\x64;$(SolutionDir)include\GLFW;%(AdditionalLibraryDirectories);$(SolutionDir)include\glew-2.1.0\lib\Release\x64;$(SolutionDir)include\freeglut\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)User32.lib;opengl32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Circle.h" />
+    <ClInclude Include="SDLFramework.h" />
+    <ClInclude Include="helpers.h" />
     <ClInclude Include="include\CppUnitLite\Failure.h" />
     <ClInclude Include="include\CppUnitLite\Test.h" />
     <ClInclude Include="include\CppUnitLite\TestHarness.h" />
     <ClInclude Include="include\CppUnitLite\TestRegistry.h" />
     <ClInclude Include="include\CppUnitLite\TestResult.h" />
     <ClInclude Include="include\CppUnitLite\WFailure.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="Rectangle.h" />
-    <ClInclude Include="Shape.h" />
-    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Link2d.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Circle.cpp" />
-    <ClCompile Include="CircleTest.cpp" />
     <ClCompile Include="CppUnitLite\Failure.cpp" />
     <ClCompile Include="CppUnitLite\Test.cpp" />
     <ClCompile Include="CppUnitLite\TestRegistry.cpp" />
     <ClCompile Include="CppUnitLite\TestResult.cpp" />
     <ClCompile Include="CppUnitLite\WFailure.cpp" />
+    <ClCompile Include="Link2d.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Point.cpp" />
-    <ClCompile Include="PointTest.cpp" />
-    <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="RectangleTest.cpp" />
-    <ClCompile Include="ShapeTest.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="TriangleTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
