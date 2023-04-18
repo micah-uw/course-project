@@ -4,6 +4,9 @@
 #include <iostream>
 #include "SDLFramework.h"
 
+//how to render every link movement
+//probably best to expand into modern VAO/VBO OpenGL
+
 void Link2d::AddLink(float len) {
 	LinkSegment newLink = { 0 };
 	newLink.len = len;
@@ -35,17 +38,11 @@ void Link2d::ForwardKinematics(int startJoint) {
 
 	for (int i = startJoint + 1; i < chain.size(); i++) 
 	{
-
-		//global angle of link = global angle of parent link + link local angle
 		chain[i].globalAngle = chain[i - 1].globalAngle + chain[i].localAngle;
-		//link xpos = parent link xpos + sin(parent.globalangle) * parent.length
 		chain[i].xpos = chain[i - 1].xpos + sin(chain[i - 1].globalAngle) * chain[i - 1].len;
-		//link ypos = parent link ypos + cos(parent.globalangle) * parent.length
 		chain[i].ypos = chain[i - 1].ypos + cos(chain[i - 1].globalAngle) * chain[i - 1].len;
 	}
-	//final link xpos + sin(final link globalangle) * finallink lenght
 	xEnd = chain[chain.size() - 1].xpos + sin(chain[chain.size() - 1].globalAngle) * chain[chain.size() - 1].len;
-	//final link ypos + cos(final link globalangle) * finallink lenght
 	yEnd = chain[chain.size() - 1].ypos + cos(chain[chain.size() - 1].globalAngle) * chain[chain.size() - 1].len;
 }
 
@@ -55,34 +52,53 @@ bool Link2d::InverseKinematics(float xTarget, float yTarget, int iterations)
 	bool found = false;
 	while(!found && iterations--)
 	{
-		if (compare_float(xEnd, xTarget) && compare_float(yEnd, yTarget))
+		if (compare_float(xEnd, xTarget,.001f) && compare_float(yEnd, yTarget, .001f))
 		{
 			m_iterations -= iterations;
 			found = true;
 		}
-		//last link localangle = arctan(x,y) atan2( xTarget - finallink x, yTarget - final link y) - second to last link global angle
-		LinkSegment lastLink = chain[chain.size() - 1];
-		LinkSegment secondToLast = chain[chain.size() - 2];
+		//FinalLink.localAngle = atan2( x, y ) - parentLink.globalangle
+		chain[chain.size() - 1].localAngle = atan2(xTarget - chain[chain.size() - 1].xpos, yTarget - chain[chain.size() - 1].ypos) - chain[chain.size() - 2].globalAngle;
 
-		lastLink.localAngle = atan2(xTarget - lastLink.xpos, yTarget - lastLink.ypos) - secondToLast.globalAngle;
-		//auto degrees = lastLink.localAngle * (180.0 / PI);
 		this->ForwardKinematics((int)chain.size() - 2);
 
 		for (int j = (int)chain.size() - 2; j > 0; j--)
 		{
 			this->ForwardKinematics(j - 1);
-			float currentAngle = atan2(xEnd - chain[j].xpos, yEnd - chain[j].ypos);
-			float targetAngle = atan2(xTarget - chain[j].xpos, yTarget - chain[j].ypos);
+
+			float currentAngle = atan2(xEnd - chain[j].xpos, yEnd - chain[j].ypos );
+			float targetAngle = atan2( xTarget - chain[j].xpos, yTarget - chain[j].ypos );
 			chain[j].globalAngle -= currentAngle - targetAngle;
 			chain[j].localAngle = chain[j].globalAngle - chain[j - 1].globalAngle;
 		}
+
 		this->ForwardKinematics(0);
+
 		float currentAngle = atan2(xEnd, yEnd);
 		float targetAngle = atan2(xTarget, yTarget);
-		//auto degrees2 = targetAngle * (180.0 / PI);
+
 		chain[0].localAngle -= currentAngle - targetAngle;
 	}
 	this->ForwardKinematics(0);
 	chain[chain.size() - 1].localAngle = atan2(xTarget - chain[chain.size() - 1].xpos, yTarget - chain[chain.size() - 1].ypos) - chain[chain.size() - 2].globalAngle;
 	return found;
+}
+
+bool Link2d::compare_float(float x, float y, float epsilon)
+{
+	if (fabs(x - y) < epsilon)
+		return true;
+	return false;
+}
+
+void Link2d::resultLog(Link2d* chain, bool foundSolution)
+{
+	if (foundSolution)
+	{
+		std::cout << "Found solution!\nAt iteration: " << chain->m_iterations << std::endl;
+	}
+	else
+	{
+		std::cout << "No solution found :(" << std::endl;
+	}
 }

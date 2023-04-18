@@ -11,7 +11,7 @@ public:
         SDL_Init(SDL_INIT_VIDEO);       // Initializing SDL as Video
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
         SDL_CreateWindowAndRenderer(width, height, 0, &m_window, &m_renderer);
-        SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0);      // setting draw color
+        SDL_SetRenderDrawColor(m_renderer, 255, 255,255, 0);      // setting draw color
         SDL_RenderClear(m_renderer);      // Clear the newly created m_window
         SDL_RenderPresent(m_renderer);    // Reflects the changes done in the
     }

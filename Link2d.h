@@ -10,6 +10,7 @@ struct LinkSegment
     float localAngle;
     float globalAngle;
 };
+
 class Link2d
 {
 public:
@@ -21,11 +22,7 @@ public:
     void ForwardKinematics(int startLink);
     bool InverseKinematics(float xTarget, float yTarget, int steps);
     void RenderChain(Link2d*, SDLFramework& fw);
-
-    bool compare_float(float x, float y, float epsilon = 0.05f) {
-        if (fabs(x - y) < epsilon)
-            return true;
-        return false; 
-    }
+    void resultLog(Link2d*, bool );
+    bool compare_float(float , float , float);
 };
 
