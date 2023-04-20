@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Link.h" />
     <ClInclude Include="SDLFramework.h" />
     <ClInclude Include="helpers.h" />
     <ClInclude Include="include\CppUnitLite\Failure.h" />
@@ -164,7 +165,10 @@
     <ClCompile Include="CppUnitLite\TestRegistry.cpp" />
     <ClCompile Include="CppUnitLite\TestResult.cpp" />
     <ClCompile Include="CppUnitLite\WFailure.cpp" />
+    <ClCompile Include="Link.cpp" />
     <ClCompile Include="Link2d.cpp" />
+    <ClCompile Include="Link2dTester.cpp" />
+    <ClCompile Include="LinkTester.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>

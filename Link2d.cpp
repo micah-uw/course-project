@@ -1,19 +1,20 @@
 #include "Link2d.h"
-#include <numeric>
+#include <cmath>
 #include "helpers.h"
 #include <iostream>
 #include "SDLFramework.h"
 
-//how to render every link movement
-//probably best to expand into modern VAO/VBO OpenGL
+Link2d::Link2d()
+	:chain{}, xEnd { 0 }, yEnd{ 0 }, m_iterations{ 0 }
+{}
 
 void Link2d::AddLink(float len) {
-	LinkSegment newLink = { 0 };
+	LinkSegment newLink{0.f,0.f,0.f,0.f,0.f};
 	newLink.len = len;
 	chain.push_back(newLink);
 }
 
-void Link2d::RenderChain(Link2d* chain, SDLFramework& fw)
+void Link2d::RenderChain(Link2d* link2d, SDLFramework& fw)
 {
 	std::array<Uint8, 4> blue{ 0,0,255,1 };
 	std::array<Uint8, 4> red{ 255,0,0,1 };
@@ -23,14 +24,14 @@ void Link2d::RenderChain(Link2d* chain, SDLFramework& fw)
 	std::array<Uint8, 4> purple{ 106,90,205,1 };
 	std::array<Uint8, 4> orange{ 245,97,0,1 };
 	std::array<std::array<Uint8, 4>, 7> colors{ {{blue},{red},{green},{yellow},{pink},{purple},{orange}} };
-	fw.draw_lineF(blue,  chain->chain[0].xpos, chain->chain[0].ypos, chain->chain[1].xpos, chain->chain[1].ypos);
-	auto chainSize = chain->chain.size();
+	fw.draw_lineF(blue,  link2d->chain[0].xpos, link2d->chain[0].ypos, link2d->chain[1].xpos, link2d->chain[1].ypos);
+	auto chainSize = link2d->chain.size();
 	for (size_t i = 1; i < chainSize - 1; i++)
 	{
 		auto colorNumber = (int)i % (int)colors.size();
-		fw.draw_lineF(colors[colorNumber], chain->chain[i].xpos, chain->chain[i].ypos, chain->chain[i + 1].xpos, chain->chain[i + 1].ypos);
+		fw.draw_lineF(colors[colorNumber], link2d->chain[i].xpos, link2d->chain[i].ypos, link2d->chain[i + 1].xpos, link2d->chain[i + 1].ypos);
 	}
-	fw.draw_lineF(purple, chain->chain[chainSize -1].xpos, chain->chain[chainSize-1].ypos, chain->xEnd, chain->yEnd);
+	fw.draw_lineF(purple, link2d->chain[chainSize -1].xpos, link2d->chain[chainSize-1].ypos, link2d->xEnd, link2d->yEnd);
 }
 
 void Link2d::ForwardKinematics(int startJoint) {
@@ -39,7 +40,8 @@ void Link2d::ForwardKinematics(int startJoint) {
 	for (int i = startJoint + 1; i < chain.size(); i++) 
 	{
 		chain[i].globalAngle = chain[i - 1].globalAngle + chain[i].localAngle;
-		chain[i].xpos = chain[i - 1].xpos + sin(chain[i - 1].globalAngle) * chain[i - 1].len;
+		chain[i].xpos = findX(chain[i - 1].xpos, chain[i - 1].globalAngle, chain[i - 1].len);
+		//chain[i].xpos = chain[i - 1].xpos + sin(chain[i - 1].globalAngle) * chain[i - 1].len;
 		chain[i].ypos = chain[i - 1].ypos + cos(chain[i - 1].globalAngle) * chain[i - 1].len;
 	}
 	xEnd = chain[chain.size() - 1].xpos + sin(chain[chain.size() - 1].globalAngle) * chain[chain.size() - 1].len;
@@ -57,7 +59,6 @@ bool Link2d::InverseKinematics(float xTarget, float yTarget, int iterations)
 			m_iterations -= iterations;
 			found = true;
 		}
-		//FinalLink.localAngle = atan2( x, y ) - parentLink.globalangle
 		chain[chain.size() - 1].localAngle = atan2(xTarget - chain[chain.size() - 1].xpos, yTarget - chain[chain.size() - 1].ypos) - chain[chain.size() - 2].globalAngle;
 
 		this->ForwardKinematics((int)chain.size() - 2);
@@ -84,6 +85,11 @@ bool Link2d::InverseKinematics(float xTarget, float yTarget, int iterations)
 	return found;
 }
 
+float Link2d::findX(float parentX, float parentGlobalAngle, float parentLength)
+{
+	return parentX + sin(parentGlobalAngle) * parentLength;
+}
+
 bool Link2d::compare_float(float x, float y, float epsilon)
 {
 	if (fabs(x - y) < epsilon)
@@ -91,11 +97,11 @@ bool Link2d::compare_float(float x, float y, float epsilon)
 	return false;
 }
 
-void Link2d::resultLog(Link2d* chain, bool foundSolution)
+void Link2d::resultLog(Link2d* link2d, bool foundSolution)
 {
 	if (foundSolution)
 	{
-		std::cout << "Found solution!\nAt iteration: " << chain->m_iterations << std::endl;
+		std::cout << "Found solution!\nAt iteration: " << link2d->m_iterations << std::endl;
 	}
 	else
 	{

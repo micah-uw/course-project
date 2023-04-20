@@ -47,6 +47,9 @@
     <ClInclude Include="SDLFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Link.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppUnitLite\WFailure.cpp">
@@ -68,6 +71,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Link2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Link2dTester.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Link.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkTester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

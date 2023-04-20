@@ -14,6 +14,12 @@ int main(int argc, char* argv[])
 {
 	argc;
 	(void*)argv;
+
+	TestResult tr;
+	TestRegistry::runAllTests(tr);
+
+	std::cout << "End of unit tests." << std::endl;
+
 	static int width = 1280;
 	static int height = 720;
 	static unsigned int centerX = width / 2;
@@ -36,20 +42,21 @@ int main(int argc, char* argv[])
 	fw.draw_circle(red, (int)target5.x, (int)target5.y, 5);
 
 	//instantiate chain
-	Link2d* chain5 = new Link2d();
-	chain5->AddLink(100.f);
-	chain5->AddLink(100.f);
-	chain5->AddLink(100.f);
+	//std::unique_ptr<Link2d> chain5 = std::make_unique<Link2d>();
+	Link2d chain5;
+	chain5.AddLink(100.f);
+	chain5.AddLink(100.f);
+	chain5.AddLink(100.f);
 
 	//add new links to reach
-	chain5->AddLink(75.f);
-	chain5->AddLink(50.f);
-	chain5->AddLink(50.f);
+	chain5.AddLink(75.f);
+	chain5.AddLink(50.f);
+	chain5.AddLink(50.f);
 
 	//try to find solution
-	bool foundSolution5 = chain5->InverseKinematics(target5.x, target5.y, 10000);
-	chain5->resultLog(chain5, foundSolution5);
-	chain5->RenderChain(chain5, fw);
+	bool foundSolution5 = chain5.InverseKinematics(target5.x, target5.y, 10000);
+	chain5.resultLog(&chain5, foundSolution5);
+	chain5.RenderChain(&chain5, fw);
 
 	//Target location
 	glm::vec2 target4{ 200.0f, -200.0f };
@@ -110,12 +117,6 @@ int main(int argc, char* argv[])
 	chain2->resultLog(chain2, foundSolution2);
 	//chain2->ForwardKinematics(0);
 	chain2->RenderChain(chain2, fw);
-
-
-
-
-
-
 
 	SDL_Event event{};    // Event variable
 	// Below while loop checks if the window has terminated using close in the
